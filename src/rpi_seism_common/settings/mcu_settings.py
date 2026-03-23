@@ -1,6 +1,6 @@
 from pydantic import BaseModel, model_validator
 
-from enums import DataRate, PGA
+from .enums import DataRate, PGA
 
 
 # Map the Enum index to the actual frequency value (SPS)

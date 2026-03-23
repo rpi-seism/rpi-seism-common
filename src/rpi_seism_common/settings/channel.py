@@ -1,6 +1,6 @@
-from enums import ChannelOrientation
-
 from pydantic import BaseModel
+
+from .enums import ChannelOrientation
 
 
 class Channel(BaseModel):

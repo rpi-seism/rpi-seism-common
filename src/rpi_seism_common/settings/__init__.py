@@ -5,10 +5,10 @@ from datetime import UTC
 import yaml
 from pydantic import BaseModel
 
-from channel import Channel
-from mcu_settings import MCUSettings
-from station import Station
-from jobs import JobsSettings
+from .channel import Channel
+from .mcu_settings import MCUSettings
+from .station import Station
+from .jobs import JobsSettings
 
 
 class Settings(BaseModel):

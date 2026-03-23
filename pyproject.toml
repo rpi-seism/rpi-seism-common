@@ -1,6 +1,6 @@
 [project]
 name = "rpi-seism-common"
-version = "0.1.0"
+version = "1.0.0"
 description = "Single source of truth for RPi Seismology schema"
 readme = "README.md"
 authors = [
