@@ -7,4 +7,4 @@ from .enums import WebsocketMessageTypeEnum
 class WebsocketMessage(BaseModel):
     """Base class for all websocket messages"""
     type: WebsocketMessageTypeEnum
-    timestamp: datetime = Field(default_factory=datetime.now(UTC))
+    timestamp: datetime = Field(default_factory=lambda: datetime.now(UTC))
