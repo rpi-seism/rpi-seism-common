@@ -1,9 +1,9 @@
 from pathlib import Path
-from datetime import datetime
-from datetime import UTC
+from datetime import datetime, UTC
+from typing import Self
 
 import yaml
-from pydantic import BaseModel
+from pydantic import BaseModel, model_validator
 
 from .channel import Channel
 from .mcu_settings import MCUSettings
@@ -25,6 +25,33 @@ class Settings(BaseModel):
     mcu: MCUSettings
 
     jobs_settings: JobsSettings
+
+    @model_validator(mode='after')
+    def validate_global_consistency(self) -> Self:
+        """
+        Performs cross-model validation to ensure hardware and software
+        logic are in sync.
+        """
+        # Ensure no duplicate ADC channels are assigned
+        adc_indices = [c.adc_channel for c in self.channels]
+        if len(adc_indices) != len(set(adc_indices)):
+            raise ValueError(f"Duplicate ADC channels detected in configuration: {adc_indices}")
+
+        # Ensure the trigger channel exists in the channel list
+        channel_names = {c.name for c in self.channels}
+        trigger_target = self.jobs_settings.trigger.trigger_channel
+        if trigger_target not in channel_names:
+            raise ValueError(
+                f"Trigger target '{trigger_target}' not found in defined channels: {channel_names}"
+            )
+
+        # Check Decimation vs Sampling Rate
+        # If your MCU samples at 100Hz and decimation is 4, your final rate is 25Hz.
+        final_rate = self.mcu.sampling_rate / self.decimation_factor
+        if final_rate < 1.0:
+            raise ValueError(f"Final sample rate ({final_rate}Hz) is too low. Increase sampling_rate.")
+
+        return self
 
     def export_settings(self, settings_file_path: Path):
         """
