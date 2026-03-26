@@ -1,4 +1,4 @@
-from pydantic import BaseModel, model_validator
+from pydantic import BaseModel, model_validator, Field
 
 from .enums import DataRate, PGA
 
@@ -25,11 +25,11 @@ SPS_MAPPING = {
 
 
 class MCUSettings(BaseModel):
-    sampling_rate: int
+    sampling_rate: int = Field(..., ge=1, le=1000)
 
     adc_gain: PGA = PGA.PGA_64
     adc_sample_rate: DataRate = DataRate.DRATE_2000SPS
-    vref: float = 2.5
+    vref: float = Field(default=2.5, ge=0.1, le=5.5)
 
     @model_validator(mode='after')
     def validate_timing_margin(self) -> 'MCUSettings':
