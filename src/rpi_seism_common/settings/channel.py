@@ -15,6 +15,7 @@ class Channel(BaseModel):
     adc_channel: int = Field(..., ge=0, le=3, description="Physical ADC differential input index")
     orientation: ChannelOrientation
     sensitivity: float = Field(default=28.8, gt=0, description="Sensitivity in V·s/m")
+    analog_gain: float = Field(default=1.0, ge=1.0, description="Fixed analog front-end gain factor")
 
     @field_validator('name')
     @classmethod
