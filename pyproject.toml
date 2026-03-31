@@ -1,7 +1,7 @@
 [project]
 name = "rpi-seism-common"
-version = "1.1.0"
-description = "Single source of truth for RPi Seismology schema"
+version = "1.2.0"
+description = "Single source of truth for RPi-Seism schema"
 readme = "README.md"
 authors = [
     { name = "ch3p4ll3", email = "slinucs@gmail.com" }
