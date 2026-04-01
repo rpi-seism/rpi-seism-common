@@ -16,6 +16,8 @@ class Channel(BaseModel):
     orientation: ChannelOrientation
     sensitivity: float = Field(default=28.8, gt=0, description="Sensitivity in V·s/m")
     analog_gain: float = Field(default=1.0, ge=1.0, description="Fixed analog front-end gain factor")
+    natural_frequency: float = Field(default=4.5, ge=1.0, description=r"Sensor natural frequency ($f_n$) in Hz")
+    damping: float = Field(default=0.707, ge=0, le=2.0, description=r"Damping ratio ($\zeta$), typically 0.707")
 
     @field_validator('name')
     @classmethod
