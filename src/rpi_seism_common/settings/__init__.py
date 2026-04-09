@@ -98,7 +98,30 @@ class Settings(BaseModel):
 
         # Load existing YAML config
         with open(settings_file_path, "r", encoding="UTF-8") as yml_file:
-            return cls(**yaml.safe_load(yml_file))
+            raw_data = yaml.safe_load(yml_file) or {}
+
+        # Pydantic will fill in any missing fields with defaults defined in your sub-models
+        settings = cls(**raw_data)
+
+        # We compare the keys in the YAML file to the keys produced by model_dump
+        if cls._is_config_incomplete(raw_data, settings.model_dump(mode='json')):
+            settings.export_settings(settings_file_path)
+
+        return settings
+
+    @staticmethod
+    def _is_config_incomplete(raw: dict, processed: dict) -> bool:
+        """
+        Recursively checks if the raw dictionary is missing any keys 
+        that exist in the processed (defaulted) dictionary.
+        """
+        for key, value in processed.items():
+            if key not in raw:
+                return True
+            if isinstance(value, dict) and isinstance(raw.get(key), dict):
+                if Settings._is_config_incomplete(raw[key], value):
+                    return True
+        return False
 
     @classmethod
     def get_default_settings(cls):
