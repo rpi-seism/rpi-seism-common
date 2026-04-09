@@ -184,6 +184,9 @@ class Settings(BaseModel):
                 "reader": {
                     "port": "/dev/ttyUSB0",
                     "baudrate": 250000
+                },
+                "ring_server": {
+                    "enabled": False
                 }
             }
         }
