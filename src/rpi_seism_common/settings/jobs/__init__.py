@@ -4,6 +4,7 @@ from .trigger import Trigger
 from .notifier import Notifier
 from .writer import Writer
 from .reader import Reader
+from .ring_server import RingServer
 
 
 class JobsSettings(BaseModel):
@@ -12,3 +13,4 @@ class JobsSettings(BaseModel):
     notifiers: list[Notifier]
     writer: Writer
     reader: Reader
+    ring_server: RingServer
