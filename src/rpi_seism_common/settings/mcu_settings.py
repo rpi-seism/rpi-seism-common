@@ -23,6 +23,16 @@ SPS_MAPPING = {
     DataRate.DRATE_30000SPS: 30000,
 }
 
+PGA_MAPPING = {
+    PGA.PGA_1: 1,
+    PGA.PGA_2: 2,
+    PGA.PGA_4: 4,
+    PGA.PGA_8: 8,
+    PGA.PGA_16: 16,
+    PGA.PGA_32: 32,
+    PGA.PGA_64: 64
+}
+
 
 class MCUSettings(BaseModel):
     sampling_rate: int = Field(..., ge=1, le=1000)
@@ -30,6 +40,11 @@ class MCUSettings(BaseModel):
     adc_gain: PGA = PGA.PGA_64
     adc_sample_rate: DataRate = DataRate.DRATE_2000SPS
     vref: float = Field(default=2.5, ge=0.1, le=5.5)
+
+    @property
+    def adc_gain_value(self):
+        """Returns the actual gain value corresponding to the selected PGA setting."""
+        return PGA_MAPPING.get(self.adc_gain, 1)
 
     @model_validator(mode='after')
     def validate_timing_margin(self) -> 'MCUSettings':
