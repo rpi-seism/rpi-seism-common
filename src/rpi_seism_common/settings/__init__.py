@@ -1,14 +1,14 @@
+from datetime import UTC, datetime
 from pathlib import Path
-from datetime import datetime, UTC
 from typing import Self
 
 import yaml
 from pydantic import BaseModel, model_validator
 
 from .channel import Channel
+from .jobs import JobsSettings
 from .mcu_settings import MCUSettings
 from .station import Station
-from .jobs import JobsSettings
 
 
 class Settings(BaseModel):
@@ -17,8 +17,9 @@ class Settings(BaseModel):
     configuration, provides methods to load and save settings from/to a YAML file,
     and includes a method to update existing settings with new values.
     """
+
     station: Station
-    start_date: datetime    # Update only when hardware configuration changes (triggers new StationXML epoch)
+    start_date: datetime  # Update only when hardware configuration changes (triggers new StationXML epoch)
 
     decimation_factor: int
     channels: list[Channel]
@@ -26,7 +27,7 @@ class Settings(BaseModel):
 
     jobs_settings: JobsSettings
 
-    @model_validator(mode='after')
+    @model_validator(mode="after")
     def validate_global_consistency(self) -> Self:
         """
         Performs cross-model validation to ensure hardware and software
@@ -35,7 +36,9 @@ class Settings(BaseModel):
         # Ensure no duplicate ADC channels are assigned
         adc_indices = [c.adc_channel for c in self.channels]
         if len(adc_indices) != len(set(adc_indices)):
-            raise ValueError(f"Duplicate ADC channels detected in configuration: {adc_indices}")
+            raise ValueError(
+                f"Duplicate ADC channels detected in configuration: {adc_indices}"
+            )
 
         # Ensure the trigger channel exists in the channel list
         channel_names = {c.name for c in self.channels}
@@ -49,7 +52,16 @@ class Settings(BaseModel):
         # If your MCU samples at 100Hz and decimation is 4, your final rate is 25Hz.
         final_rate = self.mcu.sampling_rate / self.decimation_factor
         if final_rate < 1.0:
-            raise ValueError(f"Final sample rate ({final_rate}Hz) is too low. Increase sampling_rate.")
+            raise ValueError(
+                f"Final sample rate ({final_rate}Hz) is too low. Increase sampling_rate."
+            )
+
+        nyquist_freq = final_rate / 2.0
+        if self.jobs_settings.dayplot.enabled and self.jobs_settings.dayplot.high_cutoff >= nyquist_freq:
+            raise ValueError(
+                f"Dayplot high_cutoff ({self.dayplot.high_cutoff}Hz) must be lower than "
+                f"Nyquist frequency ({nyquist_freq}Hz). Increase sampling_rate or decrease filter."
+            )
 
         return self
 
@@ -60,7 +72,7 @@ class Settings(BaseModel):
         """
 
         with open(settings_file_path, "w", encoding="UTF-8") as settings_file:
-            yaml.dump(self.model_dump(mode='json'), settings_file, indent=2)
+            yaml.dump(self.model_dump(mode="json"), settings_file, indent=2)
 
     def update_from(self, new: "Settings") -> None:
         """
@@ -104,7 +116,7 @@ class Settings(BaseModel):
         settings = cls(**raw_data)
 
         # We compare the keys in the YAML file to the keys produced by model_dump
-        if cls._is_config_incomplete(raw_data, settings.model_dump(mode='json')):
+        if cls._is_config_incomplete(raw_data, settings.model_dump(mode="json")):
             settings.export_settings(settings_file_path)
 
         return settings
@@ -112,7 +124,7 @@ class Settings(BaseModel):
     @staticmethod
     def _is_config_incomplete(raw: dict, processed: dict) -> bool:
         """
-        Recursively checks if the raw dictionary is missing any keys 
+        Recursively checks if the raw dictionary is missing any keys
         that exist in the processed (defaulted) dictionary.
         """
         for key, value in processed.items():
@@ -140,7 +152,7 @@ class Settings(BaseModel):
                 "station": "RPI3",
                 "latitude": 0.0,
                 "longitude": 0.0,
-                "elevation": 0.0
+                "elevation": 0.0,
             },
             "channels": [
                 {
@@ -157,38 +169,25 @@ class Settings(BaseModel):
                     "name": "EHE",
                     "adc_channel": 2,
                     "orientation": "east",
-                }
+                },
             ],
-            "mcu": {
-                "sampling_rate": 100,
-                "adc_gain": 6,
-                "adc_sample_rate": 11
-            },
+            "mcu": {"sampling_rate": 100, "adc_gain": 6, "adc_sample_rate": 11},
             "jobs_settings": {
                 "notifiers": [
-                    {
-                        "url": "tgram://{bot_token}/{chat_id}/",
-                        "enabled": True
-                    }
+                    {"url": "tgram://{bot_token}/{chat_id}/", "enabled": True}
                 ],
                 "trigger": {
                     "sta_sec": 0.5,
                     "lta_sec": 10.0,
                     "thr_on": 3.5,
                     "thr_off": 1.5,
-                    "trigger_channel": "EHZ"
+                    "trigger_channel": "EHZ",
                 },
-                "writer": {
-                    "write_interval_sec": 1800
-                },
-                "reader": {
-                    "port": "/dev/ttyUSB0",
-                    "baudrate": 250000
-                },
-                "ring_server": {
-                    "enabled": False
-                }
-            }
+                "writer": {"write_interval_sec": 1800},
+                "reader": {"port": "/dev/ttyUSB0", "baudrate": 250000},
+                "ring_server": {"enabled": False},
+                "dayplot": {"enabled": True},
+            },
         }
 
         return cls(**data)

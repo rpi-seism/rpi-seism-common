@@ -5,6 +5,7 @@ from .notifier import Notifier
 from .writer import Writer
 from .reader import Reader
 from .ring_server import RingServer
+from .dayplot import Dayplot
 
 
 class JobsSettings(BaseModel):
@@ -14,3 +15,4 @@ class JobsSettings(BaseModel):
     writer: Writer
     reader: Reader
     ring_server: RingServer
+    dayplot: Dayplot
