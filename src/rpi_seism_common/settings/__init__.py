@@ -59,7 +59,7 @@ class Settings(BaseModel):
         nyquist_freq = final_rate / 2.0
         if self.jobs_settings.dayplot.enabled and self.jobs_settings.dayplot.high_cutoff >= nyquist_freq:
             raise ValueError(
-                f"Dayplot high_cutoff ({self.dayplot.high_cutoff}Hz) must be lower than "
+                f"Dayplot high_cutoff ({self.jobs_settings.dayplot.high_cutoff}Hz) must be lower than "
                 f"Nyquist frequency ({nyquist_freq}Hz). Increase sampling_rate or decrease filter."
             )
 
