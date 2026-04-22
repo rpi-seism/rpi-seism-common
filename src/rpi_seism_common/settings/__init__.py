@@ -56,7 +56,7 @@ class Settings(BaseModel):
                 f"Final sample rate ({final_rate}Hz) is too low. Increase sampling_rate."
             )
 
-        nyquist_freq = final_rate / 2.0
+        nyquist_freq = self.mcu.sampling_rate / 2.0
         if self.jobs_settings.dayplot.enabled and self.jobs_settings.dayplot.high_cutoff >= nyquist_freq:
             raise ValueError(
                 f"Dayplot high_cutoff ({self.jobs_settings.dayplot.high_cutoff}Hz) must be lower than "
