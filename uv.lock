@@ -145,7 +145,7 @@ wheels = [
 
 [[package]]
 name = "rpi-seism-common"
-version = "1.5.2"
+version = "1.6.2"
 source = { editable = "." }
 dependencies = [
     { name = "pyaml" },
