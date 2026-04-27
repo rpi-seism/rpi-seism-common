@@ -1,7 +1,11 @@
 from typing import Optional
 
-from pydantic import BaseModel, Field, HttpUrl, model_validator
-from pydantic_extra_types.coordinate import Longitude, Latitude
+from pydantic import BaseModel, Field, HttpUrl, TypeAdapter, model_validator
+from pydantic_extra_types.coordinate import Latitude, Longitude
+
+
+def _parse_url(url: str) -> HttpUrl:
+    return TypeAdapter(HttpUrl).validate_python(url)
 
 
 class BookmarkGenerator(BaseModel):
@@ -10,7 +14,7 @@ class BookmarkGenerator(BaseModel):
     )
 
     api_server_url: HttpUrl = Field(
-        default="https://api.yourservice.com/v1",
+        default=_parse_url("https://api.yourservice.com/v1"),
         description="The base endpoint for the internal API server",
     )
 
@@ -63,4 +67,6 @@ class BookmarkGenerator(BaseModel):
             else station_lon
         )
 
-        return self.quakeml_url_template.format(start=start, end=end, station_lat=lat, station_lon=lon)
+        return self.quakeml_url_template.format(
+            start=start, end=end, station_lat=lat, station_lon=lon
+        )

@@ -57,7 +57,10 @@ class Settings(BaseModel):
             )
 
         nyquist_freq = self.mcu.sampling_rate / 2.0
-        if self.jobs_settings.dayplot.enabled and self.jobs_settings.dayplot.high_cutoff >= nyquist_freq:
+        if (
+            self.jobs_settings.dayplot.enabled
+            and self.jobs_settings.dayplot.high_cutoff >= nyquist_freq
+        ):
             raise ValueError(
                 f"Dayplot high_cutoff ({self.jobs_settings.dayplot.high_cutoff}Hz) must be lower than "
                 f"Nyquist frequency ({nyquist_freq}Hz). Increase sampling_rate or decrease filter."
@@ -187,6 +190,7 @@ class Settings(BaseModel):
                 "reader": {"port": "/dev/ttyUSB0", "baudrate": 250000},
                 "ring_server": {"enabled": False},
                 "dayplot": {"enabled": True},
+                "bookmark_generator": {"enabled": True},
             },
         }
 

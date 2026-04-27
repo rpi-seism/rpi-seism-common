@@ -6,6 +6,7 @@ from .writer import Writer
 from .reader import Reader
 from .ring_server import RingServer
 from .dayplot import Dayplot
+from .bookmark_generator import BookmarkGenerator
 
 
 class JobsSettings(BaseModel):
@@ -16,3 +17,4 @@ class JobsSettings(BaseModel):
     reader: Reader
     ring_server: RingServer
     dayplot: Dayplot
+    bookmark_generator: BookmarkGenerator
