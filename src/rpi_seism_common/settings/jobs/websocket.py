@@ -6,7 +6,7 @@ class Websocket(BaseModel):
         default=True, description="Whether to enable or not websocket streaming"
     )
 
-    decimation_factor: float = Field(
+    decimation_factor: int = Field(
         default=4,
         gt=0,
         description="Factor by which to decimate the data stream (Hz)",
