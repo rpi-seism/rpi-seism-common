@@ -49,7 +49,7 @@ class Settings(BaseModel):
 
         # Check Decimation vs Sampling Rate
         # If your MCU samples at 100Hz and decimation is 4, your final rate is 25Hz.
-        final_rate = self.mcu.sampling_rate / self.decimation_factor
+        final_rate = self.mcu.sampling_rate / self.jobs_settings.websocket.decimation_factor
         if final_rate < 1.0:
             raise ValueError(
                 f"Final sample rate ({final_rate}Hz) is too low. Increase sampling_rate."
