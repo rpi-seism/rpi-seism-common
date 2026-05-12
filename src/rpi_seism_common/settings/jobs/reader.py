@@ -9,7 +9,7 @@ class Reader(BaseModel):
         description="The serial device path (e.g., /dev/ttyAMA0 or COM3)",
     )
     baudrate: int = Field(
-        default=250000,
+        default=115200,
         ge=9600,
         le=2000000,
         description="Bits per second for the UART interface",

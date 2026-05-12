@@ -21,7 +21,6 @@ class Settings(BaseModel):
     station: Station
     start_date: datetime  # Update only when hardware configuration changes (triggers new StationXML epoch)
 
-    decimation_factor: int
     channels: list[Channel]
     mcu: MCUSettings
 
@@ -148,7 +147,6 @@ class Settings(BaseModel):
         """
         data = {
             "start_date": datetime.now(tz=UTC).isoformat(),
-            "decimation_factor": 4,
             "station": {
                 "location_code": "00",
                 "network": "XX",
@@ -187,10 +185,11 @@ class Settings(BaseModel):
                     "trigger_channel": "EHZ",
                 },
                 "writer": {"write_interval_sec": 1800},
-                "reader": {"port": "/dev/ttyUSB0", "baudrate": 250000},
+                "reader": {"port": "/dev/ttyUSB0", "baudrate": 115200},
                 "ring_server": {"enabled": False},
                 "dayplot": {"enabled": True},
                 "bookmark_generator": {"enabled": True},
+                "websocket": {"enabled": True},
             },
         }
 

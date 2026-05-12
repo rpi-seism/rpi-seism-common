@@ -1,16 +1,18 @@
 from pydantic import BaseModel
 
-from .trigger import Trigger
+from .bookmark_generator import BookmarkGenerator
+from .dayplot import Dayplot
 from .notifier import Notifier
-from .writer import Writer
 from .reader import Reader
 from .ring_server import RingServer
-from .dayplot import Dayplot
-from .bookmark_generator import BookmarkGenerator
+from .trigger import Trigger
+from .websocket import Websocket
+from .writer import Writer
 
 
 class JobsSettings(BaseModel):
     """Pydantic model for job-related settings."""
+
     trigger: Trigger
     notifiers: list[Notifier]
     writer: Writer
@@ -18,3 +20,4 @@ class JobsSettings(BaseModel):
     ring_server: RingServer
     dayplot: Dayplot
     bookmark_generator: BookmarkGenerator
+    websocket: Websocket

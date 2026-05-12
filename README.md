@@ -96,7 +96,7 @@ mcu:
 jobs_settings:
   reader:
     port: "/dev/ttyUSB0"
-    baudrate: 250000
+    baudrate: 115200
 
   writer:
     write_interval_sec: 1800  # SDS flush interval (10–86400 s)
@@ -194,7 +194,7 @@ A cross-validator rejects configurations where the ADC cannot complete 3-channel
 | Field | Default | Description |
 |---|---|---|
 | `port` | `/dev/ttyUSB0` | Serial device path |
-| `baudrate` | `250000` | UART baud rate (9600–2000000) |
+| `baudrate` | `115200` | UART baud rate (9600–2000000) |
 
 **`Writer`** — MiniSEED/SDS flush schedule.
 
